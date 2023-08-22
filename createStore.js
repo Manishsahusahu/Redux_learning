@@ -1,6 +1,6 @@
-const { createStore, bindActionCreators } = require("redux");
+const { createStore, bindActionCreators, combineReducers } = require("redux");
 
-function todoReducer(state, action) {
+function todoReducer(state = [], action) {
     if (action.type === "ADD_TODO") {
         const todoText = action.payload.todoText;
         return [
@@ -13,9 +13,11 @@ function todoReducer(state, action) {
         ];
     } else if (action.type === "DELETE_TODO") {
         const todo = action.payload.todo;
+        if (!todo) return state;
         return state.filter((element) => element.id !== todo.id);
     } else if (action.type === "EDIT_TODO") {
         const { todo, todoText } = action.payload;
+        if (!todo) return state;
         return state.map((el) => {
             if (todo.id === el.id) el.text = todoText;
             return el;
@@ -24,7 +26,23 @@ function todoReducer(state, action) {
     return state;
 }
 
-const response = createStore(todoReducer, []);
+function userReducer(state = [], action) {
+    if (action.type === " ADD_USER") {
+        const user = action.payload.user;
+        return [
+            ...state,
+            {
+                user: user,
+                id: state.length ? state[state.length - 1].id + 1 : 1,
+            },
+        ];
+    }
+    return state;
+}
+
+const reducer = combineReducers({ todo: todoReducer, users: userReducer });
+
+const response = createStore(reducer);
 
 const { dispatch, subscribe, getState, replaceReducer } = response;
 
