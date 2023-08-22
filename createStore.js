@@ -26,10 +26,26 @@ function todoReducer(state, action) {
 
 const response = createStore(todoReducer, []);
 
-const {dispatch, subscribe, getState, replaceReducer}= response;
+const { dispatch, subscribe, getState, replaceReducer } = response;
 
-dispatch({type: 'ADD_TODO', payload: {todoText: 'todo number1 is here'}})
-dispatch({type: 'ADD_TODO', payload: {todoText: 'todo number2 is here'}})
-// dispatch({type: 'DELETE_TODO', payload: {todo: getState()[0]}})
-dispatch({type: 'EDIT_TODO', payload: {todo: getState()[0], todoText: 'todo number1 is edited here'}})
-console.log(getState())
+subscribe(() => {
+    console.log(getState());
+});
+
+const addTodoActionCreater = (todoText) => ({
+    type: "ADD_TODO",
+    payload: { todoText: todoText },
+});
+const deleteTodoActionCreater = (todo) => ({
+    type: "DELETE_TODO",
+    payload: { todo: todo },
+});
+const editTodoActionCreater = (todo, todoText) => ({
+    type: "EDIT_TODO",
+    payload: { todo: todo, todoText: todoText },
+});
+
+dispatch(addTodoActionCreater("todo number1 is here"));
+dispatch(addTodoActionCreater("todo number2 is here"));
+dispatch(deleteTodoActionCreater(getState()[0]));
+dispatch(editTodoActionCreater(getState()[0], "todo number1 is edited here"));
