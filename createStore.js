@@ -1,4 +1,4 @@
-const { createStore } = require("redux");
+const { createStore, bindActionCreators } = require("redux");
 
 function todoReducer(state, action) {
     if (action.type === "ADD_TODO") {
@@ -45,7 +45,19 @@ const editTodoActionCreater = (todo, todoText) => ({
     payload: { todo: todo, todoText: todoText },
 });
 
-dispatch(addTodoActionCreater("todo number1 is here"));
-dispatch(addTodoActionCreater("todo number2 is here"));
-dispatch(deleteTodoActionCreater(getState()[0]));
-dispatch(editTodoActionCreater(getState()[0], "todo number1 is edited here"));
+// dispatch(addTodoActionCreater("todo number1 is here"));
+// dispatch(addTodoActionCreater("todo number2 is here"));
+// dispatch(deleteTodoActionCreater(getState()[0]));
+// dispatch(editTodoActionCreater(getState()[0], "todo number1 is edited here"));
+
+//we can bind/wrap the particular action creator methods with dispatch so that always those methods gets called with binded dispatch only
+
+const actions = bindActionCreators(
+    { addTodoActionCreater, deleteTodoActionCreater, editTodoActionCreater },
+    dispatch
+);
+
+actions.addTodoActionCreater("todo number1 is here");
+actions.addTodoActionCreater("todo number2 is here");
+actions.deleteTodoActionCreater(getState()[0]);
+actions.editTodoActionCreater(getState()[0], "todo number1 is edited here");
